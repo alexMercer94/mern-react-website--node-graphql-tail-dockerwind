@@ -5,6 +5,7 @@ import tw from 'twin.macro';
 interface IButtonProps {
     theme?: 'filled' | 'outlined';
     text: string;
+    className?: string;
 }
 
 const BaseButton = styled.button`
@@ -49,11 +50,11 @@ const FilleddButtton = styled(BaseButton)`
     `}
 `;
 
-const Button = ({ theme, text }: IButtonProps) => {
+const Button = ({ theme, text, className }: IButtonProps) => {
     if (theme === 'filled') {
-        return <FilleddButtton>{text}</FilleddButtton>;
+        return <FilleddButtton className={className}>{text}</FilleddButtton>;
     } else {
-        return <OutlinedButtton>{text}</OutlinedButtton>;
+        return <OutlinedButtton className={className}>{text}</OutlinedButtton>;
     }
 };
 
