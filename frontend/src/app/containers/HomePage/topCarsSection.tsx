@@ -1,12 +1,13 @@
 import Carousel, { Dots, slidesToShowPlugin } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import { ICar } from '../../../typings/car';
 import Car from '../../components/car';
 import { SCREENS } from '../../components/responsive';
+import carService from '../../services/carService';
 
 const TopCarsContainer = styled.div`
     ${tw`
@@ -49,6 +50,14 @@ const TopCarsSection = () => {
     const [current, setCurrent] = useState(0);
     const isMobile = useMediaQuery({ maxWidth: SCREENS.sm });
 
+    const fetchTopCars = async () => {
+        const cars = await carService.getCars().catch((err) => {
+            console.log('Error', err);
+        });
+
+        console.log(cars);
+    };
+
     const testCar: ICar = {
         name: 'Audi S3 Car',
         mileage: '10k',
@@ -78,6 +87,10 @@ const TopCarsSection = () => {
     ];
 
     const numberOfDots = isMobile ? cars.length : Math.ceil(cars.length / 3);
+
+    useEffect(() => {
+        fetchTopCars();
+    }, []);
 
     return (
         <TopCarsContainer>
