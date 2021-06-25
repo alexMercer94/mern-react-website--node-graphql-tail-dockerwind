@@ -4,6 +4,7 @@ import { createSelector, Dispatch } from '@reduxjs/toolkit';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
+import { MoonLoader } from 'react-spinners';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import { ICar } from '../../../typings/car';
@@ -62,6 +63,18 @@ const EmptyCars = styled.div`
  `};
 `;
 
+const LoadingContainer = styled.div`
+    ${tw`
+    flex
+    items-center
+    justify-center
+    w-full
+    text-base
+    text-black
+    mt-9
+ `};
+`;
+
 // * Actions
 const actionDispatch = (dispatch: Dispatch) => ({
     setTopCars: (cars: getCars_cars[]) => dispatch(setTopCars(cars)),
@@ -74,6 +87,7 @@ const stateSelector = createSelector(makeSelectTopCars, (topCars) => ({
 const TopCarsSection = () => {
     const [current, setCurrent] = useState(0);
     const isMobile = useMediaQuery({ maxWidth: SCREENS.sm });
+    const [isLoading, setisLoading] = useState(false);
 
     const { topCars } = useSelector(stateSelector);
     const { setTopCars } = actionDispatch(useDispatch());
@@ -82,6 +96,7 @@ const TopCarsSection = () => {
      * Fetch cars from API
      */
     const fetchTopCars = async () => {
+        setisLoading(true);
         const cars = await carService.getCars().catch((err) => {
             console.log('Error', err);
         });
@@ -89,6 +104,7 @@ const TopCarsSection = () => {
         if (cars) {
             setTopCars(cars);
         }
+        setisLoading(false);
     };
 
     const testCar: ICar = {
@@ -127,7 +143,12 @@ const TopCarsSection = () => {
     return (
         <TopCarsContainer>
             <Title>Explore Our Top Deals</Title>
-            {!isEmptyTopCars ? (
+            {isLoading && (
+                <LoadingContainer>
+                    <MoonLoader size={20} />
+                </LoadingContainer>
+            )}
+            {!isEmptyTopCars && !isLoading ? (
                 <CarsContainer>
                     <Carousel
                         value={current}
