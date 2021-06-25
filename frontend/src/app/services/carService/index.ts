@@ -8,8 +8,8 @@ class CarService {
             throw err;
         });
 
-        if (response && response.data) {
-            return response.data as getCars_cars[];
+        if (response && response.data && response.data.cars) {
+            return response.data.cars as getCars_cars[];
         }
 
         return [];
